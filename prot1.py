@@ -1,3 +1,5 @@
+import os
+
 caracteres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&'()*+,-./:;<=>?@[]^_`{|}~"
 controle = 3
 
@@ -26,12 +28,12 @@ def decript(palavra):
     return(novo)
 
 
-def guardar(nome, login, senha):
-    login = encript(login)
+def guardar(login, nome, senha):
+    nome = encript(login)
     senha = encript(senha)
-    info = login + "\n" + senha
-    nome = nome + ".txt"
-    dados = open(nome, "w")
+    info = nome + "\n" + senha
+    login = login + ".txt"
+    dados = open(login, "w")
     dados.write(info)
     dados.close
 
@@ -46,6 +48,7 @@ def exibir(conta):
             print(linha)
         
         dados.close
+        
     except FileNotFoundError:
         print("Conta não encontrada")
     
@@ -59,7 +62,8 @@ while res != "s":
         nom = input("Nome: ")
         log = input("Login: ")
         sen = input("Senha: ")
-        guardar(nom, log, sen)
+        guardar(log, nom, sen)
     elif res == "e":
         nom = input("Conta: ")
         exibir(nom)
+    os.system('cls' if os.name == 'nt' else 'clear')
