@@ -1,7 +1,7 @@
 import os
 
 #Caracteres usados para fazer a encriptação
-caracteres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&'()*+,-./:;<=>?@[]^_`{|}~"
+caracteres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&'()*+,-./:;<=>?@[]^_`{|}~ "
 #Indica quantas casas para o lado irão ser movidas na encriptação
 controle = 3
 
@@ -92,26 +92,35 @@ def recolher_dados(): #recolhe dados do usuário e devolve uma LISTA
     
     return info
 
+def main():
+    res = ""
 
-res = ""
+    # Basicamente, o fluxo do código todo
+    # a RESposta sempre começa vazia (""), ent ele pede um dos comandos abaixo
+    # caso res for "s", o programa é terminado
+    # ao final de cada ação, o programa vai pedir para pressionar qualquer tecla
+    # isso é feito para o usuário poder ler a informação antes dela ser apagada pelo código indicado
+    # Por fim, mas não menos importante
+    # Note que se você quiser fazer login, está escrito "Já tem uma conta? Entre aqui!"
+    while res != "s":
 
-# Basicamente, o fluxo do código todo
-# a RESposta sempre começa vazia (""), ent ele pede um dos comandos abaixo
-# caso res for "s", o programa é terminado
-# ao final de cada ação, o programa vai pedir para pressionar qualquer tecla
-# isso é feito para o usuário poder ler a informação antes dela ser apagada pelo código indicado
-# Por fim, mas não menos importante
-# Note que se você quiser fazer login, está escrito "Já tem uma conta? Entre aqui!"
-while res != "s":
+        res = input(
+            "\nO que você deseja fazer?\n"
+            "Criar -> c\n"
+            "Já tem uma conta? Entre aqui! -> e\n"
+            "Sair -> s\n"
+            "Comando: "
+        )
+        res = res.lower()
+        if res == "c":
+            informacao = recolher_dados()
+            guardar(informacao)
+        elif res == "e":
+            nom = input("Login: ")
+            exibir(nom)
+        
+        input("\n\nPressione qualquer coisa para sair.\n" )
+        os.system('cls' if os.name == 'nt' else 'clear') #código apagador de terminais
 
-    res = input("\nO que você deseja fazer?\nCriar -> c\nJá tem uma conta? Entre aqui! -> e\nSair -> s\nComando: ")
-    res.lower()
-    if res == "c":
-        informacao = recolher_dados()
-        guardar(informacao)
-    elif res == "e":
-        nom = input("Login: ")
-        exibir(nom)
-    
-    inp = input("\n\nPressione qualquer coisa para sair.\n" )
-    os.system('cls' if os.name == 'nt' else 'clear') #código apagador de terminais
+if __name__ == "__main__":
+    main()
