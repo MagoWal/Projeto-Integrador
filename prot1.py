@@ -137,26 +137,32 @@ def verificar_senha(login, senha):
 # Por fim, mas não menos importante
 # Note que se você quiser fazer login, está escrito "Já tem uma conta? Entre aqui!"
 
-res = ""
 
-while res != "3":
 
-    res = input("\nO que você deseja fazer?\nCriar uma conta -> 1\nJá tem uma conta? Entre aqui! -> 2\nSair -> 3\nComando: ")
-    res.lower()
+def main():
+    res = ""
     
-    if res == "1":
-        informacao = recolher_dados()
-        if verificar_login_disponivel(informacao[0]):
-            guardar(informacao)
+    while res != "3":
+
+        res = input("\nO que você deseja fazer?\nCriar uma conta -> 1\nJá tem uma conta? Entre aqui! -> 2\nSair -> 3\nComando: ")
+        res.lower()
         
-    elif res == "2":
-        nom = input("Login: ")
-        sen = input("\nSenha: ")
+        if res == "1":
+            informacao = recolher_dados()
+            if verificar_login_disponivel(informacao[0]):
+                guardar(informacao)
+            
+        elif res == "2":
+            nom = input("Login: ")
+            sen = input("\nSenha: ")
+            
+            if verificar_senha(nom, sen):
+                exibir(nom)
         
-        if verificar_senha(nom, sen):
-            exibir(nom)
-    
-    inp = input("\n\nPressione qualquer coisa para sair.\n" )
-    os.system('cls' if os.name == 'nt' else 'clear') #código apagador de terminais
-    
-    #Mais opções podem ser adicionadas
+        inp = input("\n\nPressione qualquer coisa para sair.\n" )
+        os.system('cls' if os.name == 'nt' else 'clear') #código apagador de terminais
+        
+        #Mais opções podem ser adicionadas
+
+if __name__ == "__main__":
+    main()
