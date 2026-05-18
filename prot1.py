@@ -64,13 +64,15 @@ def exibir(conta): #Exibe uma conta (se existir uma) com base no LOGIN
     try:#tenta o código, se não ouver arquivo com aquele LOGIN, roda o EXCEPT
         conta = conta + ".txt"
         dados = open(conta, "r") #dados é o documento de texto
+        
+        
         for linha in dados: #percorre cada LINHA de DADOS
             linha = linha.strip() #isso serve para tirar "\n" do texto
             
             if linha[0] == "-": #Caso a linha tenha um "-" antes, ela não será decodificada
                 print(linha)
                 continue
-            
+                
             linha = decript(linha)
             print(linha)
         
@@ -87,13 +89,45 @@ def recolher_dados(): #recolhe dados do usuário e devolve uma LISTA
     escolaridade = input("Escolaridade: ")
     carreira = input("Comente (se houver) seus cursos realizados e/ou experiências profissionais:\n" )
     interesse = input("Comente suas áreas de interesse:\n" )
-    
+
     info = [login, nome, senha, telefone, escolaridade, carreira, interesse]
     
     return info
 
+def verificar_login_disponivel(login):
+    if login == "":
+        return False
+    
+    arquivo = login + ".txt"
+    if os.path.exists(arquivo):
+        print("Já existe uma conta com esse login.")
+        return False
+    
+    return True
 
-res = ""
+
+def verificar_senha(login, senha):
+    if login == "" or senha == "":
+        return False
+    
+    arquivo = login + ".txt"
+    
+    if not os.path.exists(arquivo):
+        print("Conta não encontrada.")
+        return False
+    
+    with open(arquivo, "r") as dados:
+        linhas = dados.readlines()
+        senha_correta = decript(linhas[5].strip())
+    
+    if senha != senha_correta:
+        print("Senha incorreta.")
+        return False
+    
+    return True
+
+    
+
 
 # Basicamente, o fluxo do código todo
 # a RESposta sempre começa vazia (""), ent ele pede um dos comandos abaixo
@@ -102,17 +136,27 @@ res = ""
 # isso é feito para o usuário poder ler a informação antes dela ser apagada pelo código indicado
 # Por fim, mas não menos importante
 # Note que se você quiser fazer login, está escrito "Já tem uma conta? Entre aqui!"
-while res != "s":
 
-    res = input("\nO que você deseja fazer?\nCriar -> c\nJá tem uma conta? Entre aqui! -> e\nSair -> s\nComando: ")
+res = ""
+
+while res != "3":
+
+    res = input("\nO que você deseja fazer?\nCriar uma conta -> 1\nJá tem uma conta? Entre aqui! -> 2\nSair -> 3\nComando: ")
     res.lower()
-    if res == "c":
+    
+    if res == "1":
         informacao = recolher_dados()
-        guardar(informacao)
-    elif res == "e":
+        if verificar_login_disponivel(informacao[0]):
+            guardar(informacao)
+        
+    elif res == "2":
         nom = input("Login: ")
-        exibir(nom)
+        sen = input("\nSenha: ")
+        
+        if verificar_senha(nom, sen):
+            exibir(nom)
     
     inp = input("\n\nPressione qualquer coisa para sair.\n" )
     os.system('cls' if os.name == 'nt' else 'clear') #código apagador de terminais
     
+    #Mais opções podem ser adicionadas
