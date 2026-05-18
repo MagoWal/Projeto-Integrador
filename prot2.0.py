@@ -159,7 +159,7 @@ def main():
             if verificar_senha(nom, sen):
                 exibir(nom)
         
-        input("\n\nPressione qualquer coisa para sair.\n" )
+        inp = input("\n\nPressione qualquer coisa para sair.\n" )
         os.system('cls' if os.name == 'nt' else 'clear') #código apagador de terminais
         
         #Mais opções podem ser adicionadas
