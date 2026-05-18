@@ -1,7 +1,7 @@
 import os
 
 #Caracteres usados para fazer a encriptação
-caracteres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&'()*+,-./:;<=>?@[]^_`{|}~"
+caracteres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&'()*+,-./:;<=>?@[]^_`{|}~ "
 #Indica quantas casas para o lado irão ser movidas na encriptação
 controle = 3
 
