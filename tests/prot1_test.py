@@ -96,7 +96,7 @@ def test_recolher_dados(mocker): #Testar função recolher_dados
         'interesse'
     ] 
 
-    
+
 def test_verificar_login_disponivel(mocker): #Testar função verificar_login_disponivel
 
     mocker.patch('os.path.exists', return_value=False) #Simular que o arquivo não existe
@@ -106,6 +106,7 @@ def test_verificar_login_disponivel(mocker): #Testar função verificar_login_di
     mocker.patch('os.path.exists', return_value=True) #Simular que o arquivo existe
 
     assert verificar_login_disponivel('login_existente') == False #Verificar se a função retorna False para um login já existente
+
 
 def test_verificar_senha(mocker): #Testar função verificar_senha
 
@@ -122,7 +123,6 @@ def test_verificar_senha(mocker): #Testar função verificar_senha
 
     assert verificar_senha('login', 'senha_correta') == True #Verificar se a função retorna True para a senha correta
     assert verificar_senha('login', 'senha_incorreta') == False #Verificar se a função retorna False para a senha incorreta
-
 
 
 def test_main(mocker): #Testar função main
