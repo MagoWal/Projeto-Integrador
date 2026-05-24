@@ -1,4 +1,4 @@
-from prot1 import encript, decript, guardar, exibir, recolher_dados, main
+from prot1 import encript, decript, guardar, exibir, recolher_dados, verificar_login_disponivel, verificar_senha, main
 #Importar funções do código principal
 
 
@@ -63,7 +63,7 @@ def test_exibir(mocker): #Testar função exibir:
 
     exibir('login') #Utilizar função
 
-    assert mock_decript.call_count == 7 #Verificar se a função decript foi chamada para cada linha que não começa com "-"
+    assert mock_decript.call_count == 35 #Verificar se a função decript foi chamada para cada linha que não começa com "-"
     print(mock_decript.call_args_list) #Mostrar as chamadas feitas à função decript
     mock_decript.assert_any_call('encriptado(nome)') #Verificar se a função decript foi chamada com o argumento "encriptado(nome)"
     mock_print.assert_any_call('decriptado(encriptado(nome))') #Verificar se a função print foi chamada com o resultado da função decript
@@ -95,6 +95,32 @@ def test_recolher_dados(mocker): #Testar função recolher_dados
         'experiencias', 
         'interesse'
     ] 
+def test_verificar_login_disponivel(mocker): #Testar função verificar_login_disponivel
+
+    mocker.patch('os.path.exists', return_value=False) #Simular que o arquivo não existe
+
+    assert verificar_login_disponivel('novo_login') == True #Verificar se a função retorna True para um login disponível
+
+    mocker.patch('os.path.exists', return_value=True) #Simular que o arquivo existe
+
+    assert verificar_login_disponivel('login_existente') == False #Verificar se a função retorna False para um login já existente
+
+def test_verificar_senha(mocker): #Testar função verificar_senha
+
+    mocker.patch('os.path.exists', return_value=True) #Simular que o arquivo existe
+
+    conteudo_valido = "\n" * 5 + "encriptado(senha_correta)\n" #Criar um conteúdo com 5 linhas vazias e a senha na 6ª linha
+
+    mocker.patch('builtins.open', mocker.mock_open(read_data=conteudo_valido)) #Simular o conteúdo do arquivo com a senha correta encriptada
+
+    mocker.patch('prot1.decript', return_value='senha_correta') #Mockar a função decript do seu arquivo prot1 para retornar 'senha_correta'
+
+    assert verificar_senha('login', '') == False #Verificar se a função retorna False para senha vazia
+    assert verificar_senha('', 'senha_correta') == False #Verificar se a função retorna False para login vazio 
+
+    assert verificar_senha('login', 'senha_correta') == True #Verificar se a função retorna True para a senha correta
+    assert verificar_senha('login', 'senha_incorreta') == False #Verificar se a função retorna False para a senha incorreta
+
 
 
 def test_main(mocker): #Testar função main
@@ -102,7 +128,7 @@ def test_main(mocker): #Testar função main
     mock_input = mocker.patch( #Simular os inputs para criar uma conta e depois sair
         'builtins.input',
         side_effect=[
-            'c',             # comando
+            '1',             # comando
             'login',
             'nome',
             'senha',
@@ -111,12 +137,14 @@ def test_main(mocker): #Testar função main
             'curso',
             'python',
             '',              # pressione qualquer tecla
-            's',             # sair
+            '3',             # sair
             ''
         ]
     )
 
-    mock_guardar = mocker.patch('prot1.guardar')
+    mocker.patch('prot1.verificar_login_disponivel', return_value=True) #Simular que o login está disponível
+
+    mock_guardar = mocker.patch('prot1.guardar') #Simular a função guardar para verificar se ela é chamada
 
     main() #Utilizar função
 
