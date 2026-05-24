@@ -95,6 +95,8 @@ def test_recolher_dados(mocker): #Testar função recolher_dados
         'experiencias', 
         'interesse'
     ] 
+
+    
 def test_verificar_login_disponivel(mocker): #Testar função verificar_login_disponivel
 
     mocker.patch('os.path.exists', return_value=False) #Simular que o arquivo não existe
