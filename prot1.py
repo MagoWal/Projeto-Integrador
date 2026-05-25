@@ -1,7 +1,7 @@
 import os
 
 #Caracteres usados para fazer a encriptação
-caracteres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&'()*+,-./:;<=>?@[]^_`{|}~ "
+caracteres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789áéíóúýćǵḱĺḿńṕŕśẃźÁÉÍÓÚÝĆǴḰĹḾŃṔŔŚẂŹàèìòùẁỳǹÀÈÌÒÙẀỲǸâêîôûĉĝĥĵŝŵŷẑÂÊÎÔÛĈĜĤĴŜŴŶẐãõñĩũẽỹṽÃÕÑĨŨẼỸṼäëïöüÿẅẍḧẗÄËÏÖÜŸẄẌḦçÇ!#$%&'()*+,-./:;<=>?@[]^_`{|}~ "
 #Indica quantas casas para o lado irão ser movidas na encriptação
 controle = 3
 
@@ -38,11 +38,11 @@ def guardar(info): #guarda as informações num bloco de notas separado
     
     i = 0
     arquivo = info[0] + ".txt" #o arquivo criado terá o nome de LOGIN da pessoa
-    dados = open(arquivo, "a") #já que SEMPRE o primeiro elemento da lista é o LOGIN, pegamos o info[0]
+    dados = open(arquivo, "a", encoding="utf-8") #já que SEMPRE o primeiro elemento da lista é o LOGIN, pegamos o info[0]
     while i < len(info):
         dado = encript(info[i]) #Encriptamos cada dado (temos que ser sigilosos)
         if i == 0:
-            dados.write(f"-Login:\n{dado}\n") #Note que "-Login:" também irá para o arquivo, porém não será encriptado
+            dados.write(f"-Email:\n{dado}\n") #Note que "-Login:" também irá para o arquivo, porém não será encriptado
         if i == 1:
             dados.write(f"-Nome:\n{dado}\n") #Ele será incluso no arquivo para quando for exibido as informações estarem intuitivas
         if i == 2:
@@ -63,8 +63,9 @@ def guardar(info): #guarda as informações num bloco de notas separado
 def exibir(conta): #Exibe uma conta (se existir uma) com base no LOGIN
     try:#tenta o código, se não ouver arquivo com aquele LOGIN, roda o EXCEPT
         conta = conta + ".txt"
-        dados = open(conta, "r") #dados é o documento de texto
+        dados = open(conta, "r", encoding="utf-8") #dados é o documento de texto
         
+        print("\n")
         
         for linha in dados: #percorre cada LINHA de DADOS
             linha = linha.strip() #isso serve para tirar "\n" do texto
@@ -76,19 +77,36 @@ def exibir(conta): #Exibe uma conta (se existir uma) com base no LOGIN
             linha = decript(linha)
             print(linha)
         
-        dados.close
         
     except FileNotFoundError: #caso der erro, print isso aqui
         print("Conta não encontrada")
 
 def recolher_dados(): #recolhe dados do usuário e devolve uma LISTA
-    login = input("Login: ")
-    nome = input("Nome: ")
-    senha = input("Senha: ")
-    telefone = input("Telefone: ")
-    escolaridade = input("Escolaridade: ")
-    carreira = input("Comente (se houver) seus cursos realizados e/ou experiências profissionais:\n" )
-    interesse = input("Comente suas áreas de interesse:\n" )
+    login = meu_input("Email: ")
+    
+    arquivo = login + ".txt"
+    while os.path.exists(arquivo): #não pode ter um arquivo com o mesmo login
+        print("\nJá existe uma conta com esse login.\n")
+        login = meu_input("Email: ")
+        arquivo = login + ".txt"
+    
+    nome = meu_input("Nome: ")
+    
+    senha = meu_input("Senha: ") 
+    senha_confirmada = meu_input("Digite a senha novamente: ")
+    while senha != senha_confirmada: # a senha tem que ser diferente pro loop quebrar
+        print("\nVocê deve digitar a mesma senha.\n")
+        senha = meu_input("Senha: ")
+        senha_confirmada = meu_input("Digite a senha novamente: ")
+    
+    telefone = meu_input("Telefone: (+55) ")
+    while telefone.isdigit() == False or len(telefone) > 11 or len(telefone) < 0:
+        print("Telefone inválido.")
+        telefone = meu_input("Telefone: (+55) ")
+    
+    escolaridade = meu_input("Escolaridade: ")
+    carreira = meu_input("Comente (se houver) seus cursos realizados e/ou experiências profissionais:\n" )
+    interesse = meu_input("Comente suas áreas de interesse:\n" )
 
     info = [login, nome, senha, telefone, escolaridade, carreira, interesse]
     
@@ -116,7 +134,7 @@ def verificar_senha(login, senha):
         print("Conta não encontrada.")
         return False
     
-    with open(arquivo, "r") as dados:
+    with open(arquivo, "r", encoding="utf-8") as dados:
         linhas = dados.readlines()
         senha_correta = decript(linhas[5].strip())
     
@@ -126,44 +144,77 @@ def verificar_senha(login, senha):
     
     return True
 
+def meu_input(mensagem): #função para substituir o input normal, e assim poder acessar sempre o menu
+    resposta = input(mensagem)
     
-
+    if resposta == "MENU":
+        os.system('cls' if os.name == 'nt' else 'clear')
+        raise SystemExit
+    
+    return resposta
+        
+def deletar_conta(nome): 
+    nome = nome + ".txt"
+    os.remove(nome)    
+    
 
 # Basicamente, o fluxo do código todo
 # a RESposta sempre começa vazia (""), ent ele pede um dos comandos abaixo
-# caso res for "s", o programa é terminado
+# caso res for "4", o programa é terminado
 # ao final de cada ação, o programa vai pedir para pressionar qualquer tecla
 # isso é feito para o usuário poder ler a informação antes dela ser apagada pelo código indicado
 # Por fim, mas não menos importante
 # Note que se você quiser fazer login, está escrito "Já tem uma conta? Entre aqui!"
 
 
-
 def main():
-    res = ""
-    
-    while res != "3":
+    try:
+        res = ""
+        
+        while res != "4":
 
-        res = input("\nO que você deseja fazer?\nCriar uma conta -> 1\nJá tem uma conta? Entre aqui! -> 2\nSair -> 3\nComando: ")
-        res.lower()
-        
-        if res == "1":
-            informacao = recolher_dados()
-            if verificar_login_disponivel(informacao[0]):
-                guardar(informacao)
+            res = meu_input("\nPara acessar o menu sempre que desejar, digite 'MENU' em qualquer campo.\nO que você deseja fazer?\nCriar uma conta -> 1\nJá tem uma conta? Entre aqui! -> 2\nDeletar conta -> 3\nSair -> 4\nComando: ")
             
-        elif res == "2":
-            nom = input("Login: ")
-            sen = input("\nSenha: ")
+            if res == "1":
+                informacao = recolher_dados()
+                if verificar_login_disponivel(informacao[0]):
+                    guardar(informacao)
+                
+            elif res == "2":
+                nom = meu_input("Email: ")
+                sen = meu_input("Senha: ")
+                
+                if verificar_senha(nom, sen):
+                    exibir(nom)
             
-            if verificar_senha(nom, sen):
-                exibir(nom)
-        
-        input("\n\nPressione qualquer coisa para sair.\n" )
-        os.system('cls' if os.name == 'nt' else 'clear') #código apagador de terminais
-        
-        #Mais opções podem ser adicionadas
+            elif res == "3":
+                nom = meu_input("Email: ")
+                sen = meu_input("\nSenha: ")
+                
+                if verificar_senha(nom, sen):
+                    
+                    confirmacao = meu_input(f"Deseja mesmo deletar essa conta? ({nom}) (S/N)\n")
+                    confirmacao = confirmacao.upper()
+                    
+                    while confirmacao != "S" and confirmacao != "N":
+                        print("Responda corretamente\n")
+                        confirmacao = meu_input("Deseja mesmo deletar essa conta? (S/N)\n")
+                        confirmacao = confirmacao.upper()
+                        
+                    if confirmacao == "S":
+                        deletar_conta(nom)
+                        print("Conta deletada.\n")
+                    elif confirmacao == "N":
+                        print("Conta não deletada.\n")
+            
+            input("\n\nPressione qualquer coisa para sair.\n" )
+            os.system('cls' if os.name == 'nt' else 'clear') #código apagador de terminais
+            
+            #Mais opções podem ser adicionadas
 
+    except SystemExit:
+        main()
+        
 if __name__ == "__main__":
     main()
     
