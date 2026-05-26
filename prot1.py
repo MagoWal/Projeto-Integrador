@@ -100,7 +100,7 @@ def recolher_dados(): #recolhe dados do usuário e devolve uma LISTA
         senha_confirmada = meu_input("Digite a senha novamente: ")
     
     telefone = meu_input("Telefone: (+55) ")
-    while telefone.isdigit() == False or len(telefone) > 11 or len(telefone) < 0:
+    while telefone.isdigit() == False or len(telefone) != 11:
         print("Telefone inválido.")
         telefone = meu_input("Telefone: (+55) ")
     
